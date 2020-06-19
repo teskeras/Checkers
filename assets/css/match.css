@@ -1,0 +1,29 @@
+#match-table {
+    max-width: 640px;
+}
+
+#match-table td {
+    text-align: center;
+    height: 80px;
+    min-height: 80px;
+    width: 80px;
+    min-width: 80px;
+    padding: 1%;
+}
+
+.black_square {
+    background-color: #6e4637;
+}
+
+.white_square {
+    background-color: #d4cbb8;
+}
+
+.piece {
+    height: 70%;
+    width: 70%;
+}
+
+#surrender {
+    float: right;
+}

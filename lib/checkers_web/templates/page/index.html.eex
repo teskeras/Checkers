@@ -1,0 +1,8 @@
+<section class="phx-hero">
+  <h1><%= gettext "Welcome to %{name}!", name: "Checkers" %></h1>
+  <%= if @current_user do %>
+    <%= link "PLAY", to: Routes.lobby_path(@conn, :show) %>
+  <% else %>
+    <h2>Register and login to play!</h2>
+  <% end %>
+</section>

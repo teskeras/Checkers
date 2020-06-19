@@ -1,0 +1,15 @@
+<h3><%= @user.username %>'s recent matches</h1>
+<div id="last-matches">
+    <table>
+        <tbody>
+            <tr>
+                <th>White <img src="<%= Routes.static_path(@conn, "/images/white_pawn.png")%>" alt="white"></th>
+                <th>Black <img src="<%= Routes.static_path(@conn, "/images/black_pawn.png")%>" alt="black"></th>
+                <th>Winner <img src="<%= Routes.static_path(@conn, "/images/winner.png")%>" alt="winner"></th>
+            </tr>
+            <%= for {white, black, winner, white_id, black_id, winner_id} <- get_details(@last_matches) do %>
+            <tr> <td> <%= link white, to: Routes.user_path(@conn, :show, white_id) %> </td> <td> <%= link black, to: Routes.user_path(@conn, :show, black_id) %> </td> <td> <%= link winner, to: Routes.user_path(@conn, :show, winner_id) %> </td> </tr>
+            <% end %>
+        </tbody>
+    </table>
+</div>

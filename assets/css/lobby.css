@@ -1,0 +1,45 @@
+.col {
+    margin: 15px;
+    word-wrap: break-word;
+}
+
+#lobby-chat {
+    border: 1px solid grey;
+    border-radius: 10px;
+    padding: 3px;
+    min-height: 300px;
+    max-height: 300px;
+    min-width: 300px;
+    max-width: 300px;
+    overflow: auto;
+    word-wrap: break-word;
+}
+
+#message-controls {
+    margin-top: 5px;
+}
+
+#message-input {
+    width: 199px;
+}
+
+#online-players {
+    width: 200px;
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+#current-matches {
+    min-width: 200px;
+    max-width: 200px;
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+#current-matches li {
+    list-style-type: none;
+}
+
+.dialog {
+    text-align: center;
+}

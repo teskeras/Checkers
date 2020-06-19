@@ -1,0 +1,48 @@
+<h2>Welcome to checkers lobby. Click on a player to create invite.</h2>
+<dialog id="waitingDialog">
+    <form method="dialog">
+        <div class="dialog">
+            <p> Waiting for an answer</p>
+            <button>Cancel</button>
+        </div>
+    </form>
+</dialog>
+<dialog id="inviteDialog">
+    <form method="dialog">
+        <div class="dialog">
+            <p id="invite-text"></p>
+            <button value="true">Yes</button>
+            <button id="rejectBtn" value="false">No</button>
+        </div>
+    </form>
+</dialog>
+<div class="row">
+    <div class="col">
+        <%# <div id="lobby-chat">
+        </div> %>
+        <%= content_tag :div, id: "lobby-chat", data: [user_id: @user_id] do %>
+        <% end %>
+        <div id="message-controls">
+            <input type="text" id="message-input" placeholder="Send message">
+            <%# textarea %>
+            <button id="send-message" type="submit">Send</button>
+        </div>
+    </div>
+    <div class="col">
+        <h3>Online players</h3>
+        <div id="online-players">
+            <ul id="online">
+            </ul>
+        </div>
+    </div>
+    <div class="col">
+        <h3>Your current matches</h3>
+        <div id="current-matches">
+            <ul>
+                <%= for {id, white, black} <- get_details(@current_matches) do %>
+                    <li><%= link white <> " vs " <> black, to: Routes.match_path(@conn, :show, id) %></li>
+                <% end %>
+            </ul>
+        </div>
+    </div>
+</div>
