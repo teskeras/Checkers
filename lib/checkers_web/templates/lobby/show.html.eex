@@ -1,21 +1,17 @@
+<div id="waitingDialog" class="modal">
+    <div class="modal-content">
+        <p> Waiting for an answer</p>
+        <button id="cancelBtn">Cancel</button>
+    </div>
+</div>
+<div id="inviteDialog" class="modal">
+    <div class="modal-content">
+        <p id="invite-text"></p>
+        <button id="acceptBtn">Yes</button>
+        <button id="rejectBtn">No</button>
+    </div>
+</div>
 <h2>Welcome to checkers lobby. Click on a player to create invite.</h2>
-<dialog id="waitingDialog">
-    <form method="dialog">
-        <div class="dialog">
-            <p> Waiting for an answer</p>
-            <button>Cancel</button>
-        </div>
-    </form>
-</dialog>
-<dialog id="inviteDialog">
-    <form method="dialog">
-        <div class="dialog">
-            <p id="invite-text"></p>
-            <button value="true">Yes</button>
-            <button id="rejectBtn" value="false">No</button>
-        </div>
-    </form>
-</dialog>
 <div class="row">
     <div class="col">
         <%# <div id="lobby-chat">

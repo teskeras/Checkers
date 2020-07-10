@@ -68,20 +68,15 @@ let Lobby = {
             inviterId = resp.source_id
             let inviteDialog = document.getElementById("inviteDialog")
             let inviteText = document.getElementById("invite-text")
-            if (typeof inviteDialog.showModal === "function") {
-                inviteText.innerHTML = `${resp.user.username} invited you to a game.
-                    <br>
-                    Do you wish to accept?`
-                inviteDialog.showModal();
-                
-                timeout = setTimeout(function() {
-                    console.log("reject because of timeout")
-                    document.getElementById("rejectBtn").click()
-                }, 10000)
-                
-            } else {
-                alert("The <dialog> API is not supported by this browser");
-              }
+            inviteText.innerHTML = `${resp.user.username} invited you to a game.
+                <br>
+                Do you wish to accept?`
+            inviteDialog.style.display = "block";
+            
+            timeout = setTimeout(function() {
+                console.log("reject because of timeout")
+                document.getElementById("rejectBtn").click()
+            }, 10000)
         })
 
         channel_user.on("cancel", function(){
@@ -90,8 +85,10 @@ let Lobby = {
             document.getElementById("rejectBtn").click()
         })
 
+        let waitingDialog = document.getElementById("waitingDialog")
         waitingDialog.addEventListener("close", function(){
             available = true
+            waitingDialog.style.display = "none"
         })
 
         channel_user.on("accept", resp => {
@@ -100,26 +97,31 @@ let Lobby = {
             }
         })
 
-        inviteDialog.addEventListener("close", e => {
+        let acceptButton = document.getElementById("acceptBtn")
+        acceptButton.addEventListener("click", function(){
             clearTimeout(timeout)
             let payload = {sourceId: userId, destId: inviterId}
-            let invite = inviteDialog.returnValue
+            console.log("invite accept")
+            channel_user.push("accept", payload)
+            .receive("error", e => console.log(e))
+            inviteDialog.style.display = "none"
+        })
+
+        let rejectButton = document.getElementById("rejectBtn")
+        rejectButton.addEventListener("click", function(){
+            clearTimeout(timeout)
+            let payload = {sourceId: userId, destId: inviterId}
             inviterId = null
             available = true
             if (canceled) {
                 canceled = false
+                inviteDialog.style.display = "none"
                 return
             }
-            if (invite == "true") {
-                console.log("invite accept")
-                channel_user.push("accept", payload)
-                .receive("error", e => console.log(e))
-            }
-            else {
-                console.log("invite reject")
-                channel_user.push("reject", payload)
-                .receive("error", e => console.log(e))
-            }
+            console.log("invite reject")
+            channel_user.push("reject", payload)
+            .receive("error", e => console.log(e))
+            inviteDialog.style.display = "none"
         })
 
         channel_lobby.join().receive("ok", resp => console.log("joined lobby", resp))
@@ -166,24 +168,27 @@ let Lobby = {
             })
         console.log("invited" + id)
         let waitingDialog = document.getElementById("waitingDialog")
-        waitingDialog.showModal()
-        waitingDialog.addEventListener("close", function(){
+        waitingDialog.style.display = "block"
+        const event = new Event("close")
+        let cancelButton = document.getElementById("cancelBtn")
+        cancelButton.addEventListener("click", function(){
             channel_invite.push("cancel", payload)
                 .receive("error", e => {
                     console.log(e)
                     channel_invite.leave()
                 })
+            waitingDialog.dispatchEvent(event)
         })
         channel_invite.on("reject", resp => {
             if(resp.dest_id != userId || resp.source_id != id) return
-            waitingDialog.close()
+            waitingDialog.dispatchEvent(event)
             console.log("leave on reject")
             channel_invite.leave()
         })
         channel_invite.on("accept", resp => {
             if(resp.dest_id != userId || resp.source_id != id) return
             window.location.href = "/match/" + resp.match_id
-            waitingDialog.close()
+            waitingDialog.dispatchEvent(event)
             console.log("leave on accept")
             channel_invite.leave()
         })

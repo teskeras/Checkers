@@ -53,30 +53,30 @@ defmodule Checkers.GameServer do
         cond do
           piece == white_pawn() ->
             if old_coord.x + 2 == new_coord.x && (old_coord.y - 2 == new_coord.y || old_coord.y + 2 == new_coord.y) &&
-                (string_at(match.board, round((old_coord.x + new_coord.x) / 2), round((old_coord.y + new_coord.y) / 2)) == enemy_pawn ||
-                string_at(match.board, round((old_coord.x + new_coord.x) / 2), round((old_coord.y + new_coord.y) / 2)) == enemy_king) do
+                (string_at(match.board, div(old_coord.x + new_coord.x, 2), div(old_coord.y + new_coord.y, 2)) == enemy_pawn ||
+                string_at(match.board, div(old_coord.x + new_coord.x, 2), div(old_coord.y + new_coord.y, 2)) == enemy_king) do
               moved_piece = promote(new_coord, pawn, king)
-              make_move_capture(old_coord, new_coord, moved_piece, enemy_pawn, enemy_king, my_id, enemy_id, match)
+              make_move_capture(old_coord, new_coord, moved_piece, pawn, king, enemy_pawn, enemy_king, my_id, enemy_id, match)
             else
               {:error, :invalid_move}
             end
 
           piece == black_pawn() ->
             if old_coord.x - 2 == new_coord.x && (old_coord.y - 2 == new_coord.y || old_coord.y + 2 == new_coord.y) &&
-                (string_at(match.board, round((old_coord.x + new_coord.x) / 2), round((old_coord.y + new_coord.y) / 2)) == enemy_pawn ||
-                string_at(match.board, round((old_coord.x + new_coord.x) / 2), round((old_coord.y + new_coord.y) / 2)) == enemy_king) do
+                (string_at(match.board, div(old_coord.x + new_coord.x, 2), div(old_coord.y + new_coord.y, 2)) == enemy_pawn ||
+                string_at(match.board, div(old_coord.x + new_coord.x, 2), div(old_coord.y + new_coord.y, 2)) == enemy_king) do
               moved_piece = promote(new_coord, pawn, king)
-              make_move_capture(old_coord, new_coord, moved_piece, enemy_pawn, enemy_king, my_id, enemy_id, match)
+              make_move_capture(old_coord, new_coord, moved_piece, pawn, king, enemy_pawn, enemy_king, my_id, enemy_id, match)
             else
               {:error, :invalid_move}
             end
 
           piece == white_king() || piece == black_king() ->
             if (old_coord.x - 2 == new_coord.x || old_coord.x + 2 == new_coord.x) && (old_coord.y - 2 == new_coord.y || old_coord.y + 2 == new_coord.y) &&
-                (string_at(match.board, round((old_coord.x + new_coord.x) / 2), round((old_coord.y + new_coord.y) / 2)) == enemy_pawn ||
-                string_at(match.board, round((old_coord.x + new_coord.x) / 2), round((old_coord.y + new_coord.y) / 2)) == enemy_king) do
+                (string_at(match.board, div(old_coord.x + new_coord.x, 2), div(old_coord.y + new_coord.y, 2)) == enemy_pawn ||
+                string_at(match.board, div(old_coord.x + new_coord.x, 2), div(old_coord.y + new_coord.y, 2)) == enemy_king) do
               moved_piece = king
-              make_move_capture(old_coord, new_coord, moved_piece, enemy_pawn, enemy_king, my_id, enemy_id, match)
+              make_move_capture(old_coord, new_coord, moved_piece, pawn, king, enemy_pawn, enemy_king, my_id, enemy_id, match)
             else
               {:error, :invalid_move}
             end
@@ -91,13 +91,13 @@ defmodule Checkers.GameServer do
                 cond do
                   old_coord.x + 1 == new_coord.x && (old_coord.y - 1 == new_coord.y || old_coord.y + 1 == new_coord.y) ->
                     moved_piece = promote(new_coord, pawn, king)
-                    make_move(old_coord, new_coord, moved_piece, enemy_id, match)
+                    make_move(old_coord, new_coord, moved_piece, pawn, king, enemy_pawn, enemy_king, my_id, enemy_id, match)
 
                   old_coord.x + 2 == new_coord.x && (old_coord.y - 2 == new_coord.y || old_coord.y + 2 == new_coord.y) &&
-                      (string_at(match.board, round((old_coord.x + new_coord.x) / 2), round((old_coord.y + new_coord.y) / 2)) == enemy_pawn ||
-                      string_at(match.board, round((old_coord.x + new_coord.x) / 2), round((old_coord.y + new_coord.y) / 2)) == enemy_king) ->
+                      (string_at(match.board, div(old_coord.x + new_coord.x, 2), div(old_coord.y + new_coord.y, 2)) == enemy_pawn ||
+                      string_at(match.board, div(old_coord.x + new_coord.x, 2), div(old_coord.y + new_coord.y, 2)) == enemy_king) ->
                     moved_piece = promote(new_coord, pawn, king)
-                    make_move_capture(old_coord, new_coord, moved_piece, enemy_pawn, enemy_king, my_id, enemy_id, match)
+                    make_move_capture(old_coord, new_coord, moved_piece, pawn, king, enemy_pawn, enemy_king, my_id, enemy_id, match)
 
                   true -> {:error, :invalid_move}
                 end
@@ -106,13 +106,13 @@ defmodule Checkers.GameServer do
                 cond do
                   old_coord.x - 1 == new_coord.x && (old_coord.y - 1 == new_coord.y || old_coord.y + 1 == new_coord.y) ->
                     moved_piece = promote(new_coord, pawn, king)
-                    make_move(old_coord, new_coord, moved_piece, enemy_id, match)
+                    make_move(old_coord, new_coord, moved_piece, pawn, king, enemy_pawn, enemy_king, my_id, enemy_id, match)
 
                   old_coord.x - 2 == new_coord.x && (old_coord.y - 2 == new_coord.y || old_coord.y + 2 == new_coord.y) &&
-                      (string_at(match.board, round((old_coord.x + new_coord.x) / 2), round((old_coord.y + new_coord.y) / 2)) == enemy_pawn ||
-                      string_at(match.board, round((old_coord.x + new_coord.x) / 2), round((old_coord.y + new_coord.y) / 2)) == enemy_king) ->
+                      (string_at(match.board, div(old_coord.x + new_coord.x, 2), div(old_coord.y + new_coord.y, 2)) == enemy_pawn ||
+                      string_at(match.board, div(old_coord.x + new_coord.x, 2), div(old_coord.y + new_coord.y, 2)) == enemy_king) ->
                     moved_piece = promote(new_coord, pawn, king)
-                    make_move_capture(old_coord, new_coord, moved_piece, enemy_pawn, enemy_king, my_id, enemy_id, match)
+                    make_move_capture(old_coord, new_coord, moved_piece, pawn, king, enemy_pawn, enemy_king, my_id, enemy_id, match)
 
                     true -> {:error, :invalid_move}
                 end
@@ -122,13 +122,13 @@ defmodule Checkers.GameServer do
             cond do
               (old_coord.x - 1 == new_coord.x || old_coord.x + 1 == new_coord.x) && (old_coord.y - 1 == new_coord.y || old_coord.y + 1 == new_coord.y) ->
                 moved_piece = king
-                make_move(old_coord, new_coord, moved_piece, enemy_id, match)
+                make_move(old_coord, new_coord, moved_piece, pawn, king, enemy_pawn, enemy_king, my_id, enemy_id, match)
 
               (old_coord.x - 2 == new_coord.x || old_coord.x + 2 == new_coord.x) && (old_coord.y - 2 == new_coord.y || old_coord.y + 2 == new_coord.y) &&
-                  (string_at(match.board, round((old_coord.x + new_coord.x) / 2), round((old_coord.y + new_coord.y) / 2)) == enemy_pawn ||
-                  string_at(match.board, round((old_coord.x + new_coord.x) / 2), round((old_coord.y + new_coord.y) / 2)) == enemy_king) ->
+                  (string_at(match.board, div(old_coord.x + new_coord.x, 2), div(old_coord.y + new_coord.y, 2)) == enemy_pawn ||
+                  string_at(match.board, div(old_coord.x + new_coord.x, 2), div(old_coord.y + new_coord.y, 2)) == enemy_king) ->
                 moved_piece = king
-                make_move_capture(old_coord, new_coord, moved_piece, enemy_pawn, enemy_king, my_id, enemy_id, match)
+                make_move_capture(old_coord, new_coord, moved_piece, pawn, king, enemy_pawn, enemy_king, my_id, enemy_id, match)
 
                 true -> {:error, :invalid_move}
             end
@@ -197,13 +197,17 @@ defmodule Checkers.GameServer do
   #   String.trim_trailing(board_string, ",")
   # end
 
-  defp make_move(old_coord, new_coord, moved_piece, enemy_id, match) do
+  defp make_move(old_coord, new_coord, moved_piece, pawn, king, enemy_pawn, enemy_king, my_id, enemy_id, match) do
     # new_board_map = Map.put(board_map, old_coord.x, Map.put(board_map[old_coord.x], old_coord.y, empty()))
     # new_board_map = Map.put(new_board_map, new_coord.x, Map.put(new_board_map[new_coord.x], new_coord.y, moved_piece))
     # board_string = get_board_string(new_board_map)
     board = string_replace_at(match.board, old_coord.x, old_coord.y, empty())
     board = string_replace_at(board, new_coord.x, new_coord.y, moved_piece)
-    Games.update_match(match, %{turn_id: enemy_id, board: board})
+    if enemy_can_move?(board, enemy_pawn, enemy_king, pawn, king) do
+      Games.update_match(match, %{turn_id: enemy_id, board: board})
+    else
+      Games.update_match(match, %{winner_id: my_id, board: board})
+    end
   end
 
   defp promote(new_coord, pawn, king) do
@@ -224,14 +228,14 @@ defmodule Checkers.GameServer do
     end
   end
 
-  defp make_move_capture(old_coord, new_coord, moved_piece, enemy_pawn, enemy_king, my_id, enemy_id, match) do
+  defp make_move_capture(old_coord, new_coord, moved_piece, pawn, king, enemy_pawn, enemy_king, my_id, enemy_id, match) do
     # new_board_map = Map.put(board_map, old_coord.x, Map.put(board_map[old_coord.x], old_coord.y, empty()))
     # new_board_map = Map.put(new_board_map, new_coord.x, Map.put(new_board_map[new_coord.x], new_coord.y, moved_piece))
     # new_board_map = Map.put(new_board_map, (old_coord.x + new_coord.x) / 2, Map.put(new_board_map[(old_coord.x + new_coord.x) / 2], (old_coord.y + new_coord.y) / 2, empty()))
     # board_string = get_board_string(new_board_map)
     board = string_replace_at(match.board, old_coord.x, old_coord.y, empty())
     board = string_replace_at(board, new_coord.x, new_coord.y, moved_piece)
-    board = string_replace_at(board, round((old_coord.x + new_coord.x) / 2), round((old_coord.y + new_coord.y) / 2), empty())
+    board = string_replace_at(board, div(old_coord.x + new_coord.x, 2), div(old_coord.y + new_coord.y, 2), empty())
     cond do
       !String.contains?(board, [enemy_pawn, enemy_king]) ->
         Games.update_match(match, %{winner_id: my_id, board: board, extra_turn: no_extra_turn()})
@@ -239,7 +243,11 @@ defmodule Checkers.GameServer do
       true ->
         extra_turn = extra_turn(new_coord, moved_piece, enemy_pawn, enemy_king, board)
         if extra_turn == no_extra_turn() do
-          Games.update_match(match, %{turn_id: enemy_id, board: board, extra_turn: extra_turn})
+          if enemy_can_move?(board, enemy_pawn, enemy_king, pawn, king) do
+            Games.update_match(match, %{turn_id: enemy_id, board: board, extra_turn: extra_turn})
+          else
+            Games.update_match(match, %{winner_id: my_id, board: board, extra_turn: extra_turn})
+          end
         else
           Games.update_match(match, %{turn_id: my_id, board: board, extra_turn: extra_turn})
         end
@@ -294,6 +302,60 @@ defmodule Checkers.GameServer do
 
           true -> no_extra_turn()
         end
+    end
+  end
+
+  defp enemy_can_move?(board, enemy_pawn, enemy_king, pawn, king) do
+    can_move?(false, board, 0, enemy_pawn, enemy_king, pawn, king)
+  end
+
+  defp can_move?(true, _, _, _, _, _, _) do
+    true
+  end
+
+  defp can_move?(false, board, n, enemy_pawn, enemy_king, pawn, king) do
+    cond do
+      n >= String.length(board) ->
+        false
+
+      String.at(board, n) == enemy_pawn || String.at(board, n) == enemy_king ->
+        piece = String.at(board, n)
+        i = div(n, 9)
+        j = rem(n, 9)
+        cond do
+          piece == white_pawn() ->
+            if (i + 1 < 8 && j - 1 >= 0 && string_at(board, i + 1, j - 1) == empty()) || (i + 1 < 8 && j + 1 < 8 && string_at(board, i + 1, j + 1) == empty()) ||
+                (i + 2 < 8 && j - 2 >= 0 && string_at(board, i + 2, j - 2) == empty() && (string_at(board, i + 1, j - 1) == black_pawn() || string_at(board, i + 1, j - 1) == black_king())) ||
+                (i + 2 < 8 && j + 2 < 8 && string_at(board, i + 2, j + 2) == empty() && (string_at(board, i + 1, j + 1) == black_pawn() || string_at(board, i + 1, j + 1) == black_king())) do
+              can_move?(true, board, n + 1, enemy_pawn, enemy_king, pawn, king)
+            else
+              can_move?(false, board, n + 1, enemy_pawn, enemy_king, pawn, king)
+            end
+
+          piece == black_pawn() ->
+            if (i - 1 >= 0 && j - 1 >= 0 && string_at(board, i - 1, j - 1) == empty()) || (i - 1 >= 0 && j + 1 < 8 && string_at(board, i - 1, j + 1) == empty()) ||
+                (i - 2 >= 0 && j - 2 >= 0 && string_at(board, i - 2, j - 2) == empty() && (string_at(board, i - 1, j - 1) == white_pawn() || string_at(board, i - 1, j - 1) == white_king())) ||
+                (i - 2 >= 0 && j + 2 < 8 && string_at(board, i - 2, j + 2) == empty() && (string_at(board, i - 1, j + 1) == white_pawn() || string_at(board, i - 1, j + 1) == white_king())) do
+              can_move?(true, board, n + 1, enemy_pawn, enemy_king, pawn, king)
+            else
+              can_move?(false, board, n + 1, enemy_pawn, enemy_king, pawn, king)
+            end
+
+          true ->
+            if (i - 1 >= 0 && j - 1 >= 0 && string_at(board, i - 1, j - 1) == empty()) || (i - 1 >= 0 && j + 1 < 8 && string_at(board, i - 1, j + 1) == empty()) ||
+                (i + 1 < 8 && j - 1 >= 0 && string_at(board, i + 1, j - 1) == empty()) || (i + 1 < 8 && j + 1 < 8 && string_at(board, i + 1, j + 1) == empty()) ||
+                (i - 2 >= 0 && j - 2 >= 0 && string_at(board, i - 2, j - 2) == empty() && (string_at(board, i - 1, j - 1) == pawn || string_at(board, i - 1, j - 1) == king)) ||
+                (i - 2 >= 0 && j + 2 < 8 && string_at(board, i - 2, j + 2) == empty() && (string_at(board, i - 1, j + 1) == pawn || string_at(board, i - 1, j + 1) == king)) ||
+                (i + 2 < 8 && j - 2 >= 0 && string_at(board, i + 2, j - 2) == empty() && (string_at(board, i + 1, j - 1) == pawn || string_at(board, i + 1, j - 1) == king)) ||
+                (i + 2 < 8 && j + 2 < 8 && string_at(board, i + 2, j + 2) == empty() && (string_at(board, i + 1, j + 1) == pawn || string_at(board, i + 1, j + 1) == king)) do
+              can_move?(true, board, n + 1, enemy_pawn, enemy_king, pawn, king)
+            else
+              can_move?(false, board, n + 1, enemy_pawn, enemy_king, pawn, king)
+            end
+        end
+
+      true ->
+        can_move?(false, board, n + 1, enemy_pawn, enemy_king, pawn, king)
     end
   end
 end
